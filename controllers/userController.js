@@ -179,8 +179,6 @@ module.exports.checkOut = (req, res) => {
 					res.status(406).send(failed);
 				});
 
-
-
 			}).catch( failedAddingOrder => { res.send(failedAddingOrder) });
 		}
 	}).catch( errorUser => {

@@ -1,6 +1,6 @@
 const Product = require("../models/product");
 const User = require("../models/user");
-/*-- METHODS --*/
+/*-- METHODS --*/ 
 
 // Get all active Products
 module.exports.getAllProducts = (req, res) => {
@@ -139,9 +139,9 @@ module.exports.addToCart = (req, res) => {
 
 				userResult.save()
 				.then( success => {
-					res.send(success);
+					res.status(201).send(`${resultProduct.productName} is added to cart.`);
 				}).catch( failed => { 
-					res.send(failed) 
+					res.status(406).send(failed); 
 				});
 				console.log(userResult.cart);
 
@@ -169,7 +169,7 @@ module.exports.addToCart = (req, res) => {
 				.then( success => {
 					res.status(201).send(`${resultProduct.productName} is added to cart.`);
 				}).catch( failed => { 
-					res.status(406).send(failed) 
+					res.status(406).send(failed);
 				});
 
 				console.log(userResult.cart);

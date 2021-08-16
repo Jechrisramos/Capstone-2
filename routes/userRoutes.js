@@ -1,5 +1,5 @@
 /* --Import Express Module-- */
-const express = require("express");
+const express = require("express"); 
 //assigned router from express module
 const router = express.Router();
 
@@ -16,6 +16,6 @@ router.get('/', verifyToken, verifyAdmin, getUsers);
 router.put('/:id/set-admin', verifyToken, verifyAdmin, updateUserRole);
 router.get('/profile', verifyToken, userProfile);
 router.put('/update', verifyToken, updateUser);
-router.post('/checkout', verifyToken, checkOut);
+router.post('/checkout', verifyToken, checkOut); //user-checkout
 /*-- Expose/Export router as a module --*/
 module.exports = router;

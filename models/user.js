@@ -1,5 +1,5 @@
 /* --Import Mongoose module-- */
-const mongoose = require("mongoose"); 
+const mongoose = require("mongoose");
 // destructure schema object from mongoose module
 const { Schema } = mongoose;
 
