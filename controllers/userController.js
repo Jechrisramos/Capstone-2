@@ -1,0 +1,190 @@
+/* --MODULES-- */
+const bcrypt = require("bcrypt");
+
+/* --MODEL-- */
+const User = require("../models/user");
+const Order = require("../models/order");
+const { createAccessToken } = require("../auth");
+
+/* --CONTROLLERS-- */
+
+// Get all users
+module.exports.getUsers = (req, res) => {
+	User.find({})
+	.then( users => {
+		res.status(202).send(users);
+	})
+	.catch( error => res.status(409).send(error) );
+} // end of getUsers
+
+// Register New User
+module.exports.register = (req, res) => {
+	// res.send(req.body.address.state);
+	if(req.body.firstName && req.body.lastName && req.body.avatarId && req.body.tel && req.body.email && req.body.password){
+		//converting email inputs into lowercase format
+		let formattedEmail = req.body.email.toLowerCase();
+		// find email from collection
+		User.findOne( {email : formattedEmail} )
+		.then( result => {
+			if(result){
+				res.status(406).send(`Email is already taken.`);
+			}else{
+				let newUser = new User({
+					firstName: req.body.firstName,
+					lastName: req.body.lastName,
+					avatarId: "611776a641ce1d3390ba4f6f",
+					tel: req.body.tel,
+					email: formattedEmail,
+					password: bcrypt.hashSync(req.body.password, 10),
+					isAdmin: req.body.isAdmin,
+					address: req.body.address
+				});
+				newUser.save()
+				.then( registeredUser => res.status(201).send(`New User is registered.`) )
+				.catch( errorResult => res.status(409).send(errorResult) );
+			}
+		} )
+		.catch( error => res.status(409).send(error) );
+	}else{
+		res.status(406).send(`All inputs are required.`);
+	}
+
+} // end of register
+
+// login user
+module.exports.login = (req, res) => {
+	
+	if(req.body.email && req.body.password){
+		let formattedEmail = req.body.email.toLowerCase();
+		User.findOne({email:formattedEmail}, (error, foundUser) => {
+			if(error){
+				res.status(406).send(error);
+			} else {
+				if(foundUser && (foundUser.email == formattedEmail)){
+					if(bcrypt.compareSync(req.body.password, foundUser.password)){
+						res.status(202).send({ accessToken : createAccessToken(foundUser) });
+					}else{
+						res.status(406).send("The password you entered does not match. Please try again.");
+					}
+				}else{
+					res.status(406).send("Whoops! Email does not exist. Please try again.");
+				}
+			}
+		});
+	} else {
+		res.status(406).send("All fields are required.");
+	}
+
+} // end of login
+
+// User profile
+module.exports.userProfile = (req, res) => {
+	User.findById(req.verifiedUser.id, (error, profile) => {
+		if(error){
+			res.status(406).send(error);
+		}else{
+			res.status(202).send(profile);
+		}
+	});
+} // end of profile
+
+// Update user info
+module.exports.updateUser = (req, res) => {
+	
+	let updates = {
+		firstName : req.body.firstName,
+		lastName : req.body.lastName,
+		avatarId : req.body.avatarId,
+		tel : req.body.tel,
+		isAdmin : req.body.isAdmin
+	}
+	let options = {
+		new : true
+	}
+
+	User.findByIdAndUpdate(req.verifiedUser.id, {$set:updates}, options, (error, updatedUser) => {
+		if(error){
+			res.status(409).send(error);
+		}else{
+			res.status(202).send("User details updated successfully.");
+		}
+	});
+
+} // end of updateUser
+
+// Update user role into admin
+module.exports.updateUserRole = (req, res) => {
+	
+	User.findById(req.params.id)
+	.then( result => {
+		if(result.isAdmin == true){
+			res.status(406).send(`${result.firstName} ${result.lastName} is already an admin.`);
+		}else{
+			result.isAdmin = true;
+			result.save()
+			.then( updatedRole => {
+				res.status(202).send(`${result.firstName} ${result.lastName} is now an Admin.`);
+			}).catch( errorUpdate => {
+				res.status(400).send(errorUpdate);
+			})
+		}
+	}).catch( error => {
+		res.status(406).send(error);
+	} );
+
+} // end of updateUserRole
+
+// let user proceed to checkout his/her cart items.
+module.exports.checkOut = (req, res) => {
+
+	User.findById(req.verifiedUser.id)
+	.then( foundUser => {
+
+		//if cart is empty throw prompt message.
+		if(foundUser.cart.length == 0){
+			res.status(406).send("Please add product(s) to your cart first, before check-out. Thank you.");
+		}else{ //proceed to create an order instead
+			let computedPrices = 0;
+			if(foundUser.cart.length > 1){
+				//compute each subtotal price of items.
+				computedPrices = foundUser.cart.reduce((initial, current) => {
+					return initial.subTotal + current.subTotal;
+				});
+			}else{
+				computedPrices = foundUser.cart[0].subTotal;
+			}
+
+
+			// instantiate new order
+			let newOrder = new Order ({
+				products: foundUser.cart,
+				totalAmount: computedPrices, 
+				userId: foundUser._id,
+				paymentMethod: "COD",
+				status: "in-progress"
+			});
+
+			//saving the newOrder to collection with in-progress status.
+			newOrder.save()
+			.then( addedNewOrder => {
+
+				// saving the order id into user's order property
+				foundUser.orders.push(newOrder._id);
+				// removing all items in users cart
+				foundUser.cart.splice(0, foundUser.cart.length);
+				foundUser.save()
+				.then( success => {
+					res.status(201).send(`Congratulations! Your Order with serial number ${newOrder._id} was successfully added.`);
+				}).catch( failed => {
+					res.status(406).send(failed);
+				});
+
+
+
+			}).catch( failedAddingOrder => { res.send(failedAddingOrder) });
+		}
+	}).catch( errorUser => {
+		res.send(errorUser);
+	});
+
+} //end of checkOut
