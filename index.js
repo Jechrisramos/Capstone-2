@@ -21,7 +21,8 @@ const port = 4000;
 	const categoryRoutes = require(__dirname + "/routes/categoryRoutes");
 	const productRoutes = require(__dirname + "/routes/productRoutes");
 	const orderRoutes = require(__dirname + "/routes/orderRoutes");
-
+	const reviewRoutes = require(__dirname + "/routes/reviewRoutes");
+	
 	/* --App extended feature-- */
 	app.use(express.json());
 	app.use(express.urlencoded({extended:true}));
@@ -32,5 +33,6 @@ const port = 4000;
 	app.use("/categories", categoryRoutes);
 	app.use("/products", productRoutes);
 	app.use("/orders", orderRoutes);
+	app.use("/reviews", reviewRoutes);
 
 app.listen(port, () => console.log(`Server is running at http://localhost:${port}`));

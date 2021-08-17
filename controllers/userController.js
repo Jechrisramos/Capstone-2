@@ -134,6 +134,70 @@ module.exports.updateUserRole = (req, res) => {
 
 } // end of updateUserRole
 
+// User can view his/her cart
+module.exports.myCart = (req, res) => {
+	User.findById(req.verifiedUser.id)
+	.then( foundUser => {
+		if(foundUser.cart.length == 0){ //if empty
+			res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+		}else{ //send cart's items.
+			res.status(202).send(foundUser.cart);
+		}
+	}).catch( error => {
+		res.status(406).send(error);
+	} );
+} //end of myCart
+
+// User can delete all items in his/her cart
+module.exports.deleteAllCartItems = (req, res) => {
+	User.findById(req.verifiedUser.id)
+	.then( foundUser => {
+		if(foundUser.cart.length == 0){ //if empty
+			res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+		}else{
+			foundUser.cart.splice(0, foundUser.cart.length); //delete all starting with index zero based on the cart's total count
+			foundUser.save()
+			.then( success => {
+				res.status(202).send(`Deleted all items in your Cart.`);
+			}).catch( failed => {
+				res.status(406).send(failed);
+			});
+		}
+	}).catch( error => {
+		res.status(406).send(error);
+	});
+} //end of deleteAllCartItems
+
+// User can remove an item in his/her cart
+module.exports.deleteOneCartItem = (req, res) => {
+	User.findById(req.verifiedUser.id)
+	.then( foundUser => {
+		if(foundUser.cart.length == 0){ //if empty
+			res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+		}else{
+			const itemIndex = foundUser.cart.findIndex( foundItem => new String(foundItem._id).trim() == new String(req.params.itemId).trim());
+			if(itemIndex >= 0){ //if index is greater than or equal to 0 perform splice
+				foundUser.cart.splice(itemIndex, 1); //removing 1 item based on the index of the requested item.
+				foundUser.save() //save the whole document
+				.then( success => {
+					if(success.cart.length == 0){
+						res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+					}else{
+						res.status(201).send(success.cart); //will send user's updated cart
+					}
+				}).catch( failed => {
+					res.status(406).send(failed);
+				});
+			}else{ // assume itemIndex = -1 which no result throw error message.
+				res.status(406).send(`${req.params.itemId} has no result. No changes made.`);
+			}
+			
+		}
+	}).catch( error => {
+		res.status(406).send(error);
+	});
+} //end of deleteOnceCartItem
+
 // let user proceed to checkout his/her cart items.
 module.exports.checkOut = (req, res) => {
 
@@ -142,7 +206,7 @@ module.exports.checkOut = (req, res) => {
 
 		//if cart is empty throw prompt message.
 		if(foundUser.cart.length == 0){
-			res.status(406).send("Please add product(s) to your cart first, before check-out. Thank you.");
+			res.status(406).send("Please add product(s) to your cart first, before proceeding to check-out. Thank you.");
 		}else{ //proceed to create an order instead
 			let computedPrices = 0;
 			if(foundUser.cart.length > 1){

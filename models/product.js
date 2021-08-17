@@ -15,11 +15,7 @@ const productSchema = new Schema ({
 		}
 	],
 	shortDescription: String,
-	categories:[ //will be an array of objects
-		{
-			categoryId: String
-		}
-	],
+	category: String,
 	isAvailable: {
 		type: Boolean,
 		default: true

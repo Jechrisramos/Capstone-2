@@ -4,7 +4,7 @@ const Category = require("../models/category");
 
 // Retrieve all active categories
 module.exports.getAll = (req, res) => {
-	Category.find({isActive:true})
+	Category.find()
 	.then( activeCategories => {
 		res.status(202).send(activeCategories);
 	}).catch( error => {
