@@ -109,7 +109,12 @@ module.exports.createProduct = (req, res) => {
 					//get the category
 					Category.findById(savedProduct.category)
 					.then( foundCategory => {
-						foundCategory.products.push(savedProduct._id); //add product to category's products property.
+						
+						let newProduct = {
+							productId: savedProduct._id
+						}
+						
+						foundCategory.products.push(newProduct); //add product to category's products property.
 						foundCategory.save() //save the pushed product
 						.then( success => {
 							res.status(201).send(`New Product is added.`);
