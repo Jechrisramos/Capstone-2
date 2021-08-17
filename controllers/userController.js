@@ -154,7 +154,6 @@ module.exports.checkOut = (req, res) => {
 				computedPrices = foundUser.cart[0].subTotal;
 			}
 
-
 			// instantiate new order
 			let newOrder = new Order ({
 				products: foundUser.cart,

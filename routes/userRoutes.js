@@ -8,7 +8,6 @@ const { verifyToken, verifyAdmin } = require("../auth");
 /* --CONTROLLER-- */
 const { getUsers, register, login, userProfile, updateUser, updateUserRole, checkOut } = require("../controllers/userController");
 
-
 /* --ROUTES-- */
 router.post('/login', login);
 router.post('/register', register);

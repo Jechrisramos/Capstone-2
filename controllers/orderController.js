@@ -17,13 +17,14 @@ module.exports.getAllOrders = (req, res) => {
 	});
 } //end of getAllOrders
 
+
 // filter by in-progress, delivery, complete, or cancelled status
 module.exports.filterByStatus = (req, res) => {
 	if(req.body.status == "in-progress" || req.body.status == "delivery" || req.body.status == "complete" || req.body.status == "cancelled"){
 		Order.find({status:req.body.status})
 		.then( orders => {
 			if(orders.length == 0){
-				res.status(201).send(`There are no orders with "${req.body.status}" status yet.`);
+				res.status(201).send(`There are no orders with "${req.body.status}" status as of now.`);
 			}else{
 				res.status(201).send(orders);
 			}
@@ -33,8 +34,21 @@ module.exports.filterByStatus = (req, res) => {
 	}else{
 		res.status(406).send("Invalid Query field. Please try again.");
 	}
-	
 } //end of filterByStatus
+
+// view one order
+module.exports.viewOrder = (req, res) => {
+	Order.findById(req.params.id)
+	.then( order => {
+		if(order){
+			res.status(201).send(order);
+		}else{
+			res.status(201).send(`There are no result for ${req.params.id}.`);
+		}
+	}).catch( error => {
+		res.status(406).send(error);
+	});
+} //end of viewOrder
 
 // Update Order to delivery stage
 module.exports.toDeliver = (req, res) => {
@@ -50,7 +64,7 @@ module.exports.toDeliver = (req, res) => {
 			order.status = "delivery";
 			order.save()
 			.then( success => {
-				res.status(202).send("Order is complete.");
+				res.status(202).send("Order is set for Delivery.");
 			}).catch( failed =>{
 				res.status(406).send(failed);
 			});
@@ -62,7 +76,7 @@ module.exports.toDeliver = (req, res) => {
 
 // Update Order to Complete
 module.exports.toComplete = (req, res) => {
-	Order.findyById(req.params.id)
+	Order.findById(req.params.id)
 	.then( order => {
 		if(order.status == "in-progress"){
 			res.status(406).send("Unable to proceed. Order is still on in-progress stage.");
@@ -88,21 +102,29 @@ module.exports.toComplete = (req, res) => {
 module.exports.myOrders = (req, res) => {
 	Order.find({userId:req.verifiedUser.id})
 	.then( orders => {
-		res.status(202).send(orders);
+		if(!orders.length == 0){
+			res.status(202).send(orders);
+		}else{
+			res.status(406).send("You have no orders yet.");
+		}
 	}).catch( error => {
 		res.status(406).send(error);
 	});
 } //end of myOrders
 
 // get an order of the authenticated user.
-module.exports.viewOrder = (req, res) => {
+module.exports.viewMyOrder = (req, res) => {
 	Order.findById(req.params.id)
 	.then( order => {
-		res.status(202).send(order);
+		if(order.userId == req.verifiedUser.id){
+			res.status(202).send(order);
+		}else{
+			res.status(401).send("You are not authorized to proceed to this operation.");
+		}
 	}).catch( error => {
 		res.status(406).send(error);
 	});
-} //end of viewOrder
+} //end of viewMyOrder
 
 // Update Order to Complete
 module.exports.toCancel = (req, res) => {

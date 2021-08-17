@@ -40,7 +40,7 @@ module.exports.verifyToken = (req, res, next) => {
 module.exports.verifyAdmin = (req, res, next) => {
 	if(req.verifiedUser.isAdmin){
 		next();
-	} else{
+	} else {
 		res.status(401).send("Unauthorized Access: Admin access only!");
 	}
 } // end of verifyAdmin
