@@ -55,7 +55,6 @@ All can publicly view Shop Page, Category Page, and Single Product Page.
 
 16. Regular User can:
 			- Update his/her profile details.
-			- Update avatar image.
 			- See Active Avatars, Categories, and Products.
 			- Add products to his/her cart.
 			- Process Checkout.
