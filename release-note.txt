@@ -62,7 +62,7 @@ All can publicly view Shop Page, Category Page, and Single Product Page.
 			- Update a Product Review.
 			- Archive a Product Review.
 
-17. Regular User cannot
+17. Regular User cannot:
 			- See archived Avatar, Category, Product
 			- Create Avatar, Category and Product
 			- Update Avatar, Category and Product
@@ -71,3 +71,12 @@ All can publicly view Shop Page, Category Page, and Single Product Page.
 			- Cancel orders with Delivery, Complete and even Cancelled status.
 
 =============
+
+Stretch-Goals
+
+1. Avatar
+2. Product Categories
+3. Delete all/one item(s) in the cart.
+4. Order Status (in-progress, delivery, complete)
+5. User's order cancelation
+6. Product Review (Star Rating and Comment)
