@@ -1,0 +1,74 @@
+Application Coverage
+
+=============
+User Endpoint
+1. Register (Admin and Regular) Users.
+2. Login and Token Authentication (JWT) along with Password Encryption (BCrypt).
+3. User Profile - Retrieve's authenticated user's details.
+4. Update Details - Authenticated user can update his/her profile details. (Name, Phone, Address and Avatar).
+
+5. Admin can retrieve list of users.
+6. Admin can promote a regular user's role into admin role.
+
+All can publicly view Shop Page, Category Page, and Single Product Page.
+
+7. Cart - All user has a cart. (cart is inserted as a property on userSchema). 
+        - Each Cart items has its default 1 quantity.
+        - Each Cart items has its subtotal prices (quantity*price).
+        - Existing cart items will append and will add 1 to it's quantity for every instance of it.
+
+8. Delete Cart items 
+        - User can have the option to delete all items on his/her cart.
+        - User can also perform 1 deletion if he/she wishes to do so.
+
+9. CheckOut - A User can proceed to checkout or create a new order if his/her cart is not empty.
+			- A user's cart will be empty once the checkout is complete.
+
+10. User Orders 
+			- Order consists of userId, products(quantity, id and subtotal), totalAmount (sum of all subTotal prices), payment method and a default "in-progress" status.
+            - User can view all of his/her orders from (In-Progress, Cancelled, for Delivery and Complete) status.
+            - A User can view whole details of one order.
+            - A User can only cancel his/her order if it is only on in-progress status. else not applicable.
+
+11. Admin can Add a new: 
+			- Avatar image
+			- Product Category
+			- Product
+
+12. Admin can Update existing:
+			- Avatar image
+			- Product Category
+			- Product
+
+13. Admin can Archive existing:
+			- Avatar image
+			- Product Category
+			- Product
+
+14. Admin can Update orders:
+			- from in-progress into delivery status
+			- from delivery into complete status
+
+15. Admin cannot:
+			- Update a user's order details.
+			- Delete a user's product Review.
+
+16. Regular User can:
+			- Update his/her profile details.
+			- Update avatar image.
+			- See Active Avatars, Categories, and Products.
+			- Add products to his/her cart.
+			- Process Checkout.
+			- Add a Product Review (Star Ratings and Comments) *applicable only if his/her orders are complete not cancelled, in-progress or delivery.
+			- Update a Product Review.
+			- Archive a Product Review.
+
+17. Regular User cannot
+			- See archived Avatar, Category, Product
+			- Create Avatar, Category and Product
+			- Update Avatar, Category and Product
+			- Archive Avatar, Category and Product
+			- Add archived products to his/her cart.
+			- Cancel orders with Delivery, Complete and even Cancelled status.
+
+=============
