@@ -96,7 +96,7 @@ module.exports.updateUser = (req, res) => {
 		lastName : req.body.lastName,
 		avatarId : req.body.avatarId,
 		tel : req.body.tel,
-		isAdmin : req.body.isAdmin
+		address : req.body.address
 	}
 	let options = {
 		new : true
