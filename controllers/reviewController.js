@@ -18,7 +18,7 @@ module.exports.myReviews = (req, res) => {
 	});
 } //end of myReviews
 
-// write a product review - applicable to complete orders
+// write a product review - applicable for complete orders
 module.exports.writeReview = (req, res) => {
 	
 	//find order with complete status.
@@ -83,24 +83,81 @@ module.exports.writeReview = (req, res) => {
 
 // update a review entry
 module.exports.updateReview = (req, res) => {
+	
 	Review.findById(req.params.reviewId)
 	.then( resultReview => {
 
-		if(req.body.stars && req.body.comment){
-			resultReview.stars = req.body.stars;
-			resultReview.comment = req.body.comment;
+		if(resultReview.publishedBy == req.verifiedUser.id){
+			if(req.body.stars && req.body.comment){
+				resultReview.stars = req.body.stars;
+				resultReview.comment = req.body.comment;
 
-			resultReview.save()
-			.then(success => {
-				res.status(201).send("Review has been updated.");
-			}).catch(error => {
-				res.status(406).send(error);
-			});
+				resultReview.save()
+				.then( success => {
+					res.status(201).send("Review has been updated.");
+				}).catch( error => {
+					res.status(406).send(error);
+				});
+			}else{
+				res.status(406).send("Rating and Comment are required.");
+			}
 		}else{
-			res.status(406).send("Rating and Comment are required.");
+			res.status(401).send("Oh no. Sorry but you are not allowed to proceed to this operation.");
+		}
+		
+		
+	}).catch( errorReview => {
+		res.status(406).send(errorReview);
+	});
+
+} //end of updateReview
+
+// disable or archive a review
+module.exports.dropReview = (req, res) => {
+	Review.findById(req.params.reviewId)
+	.then( resultReview => {
+
+		if(resultReview.publishedBy == req.verifiedUser.id){
+
+			if(resultReview.isDropped) {
+				res.status(406).send("Review was already archived.");
+			}else{
+				resultReview.isDropped = true;
+
+				resultReview.save()
+				.then( droppedReview => {
+					
+					//get the product to find the index of the reviewId from its reviews property
+					Product.findById(droppedReview.productId)
+					.then( foundProduct => {
+						const reviewIndex = foundProduct.reviews.findIndex( foundReview => new String(foundReview.reviewId).trim() == new String(req.params.reviewId).trim());
+						if(reviewIndex >= 0){
+							
+							foundProduct.reviews.splice(reviewIndex, 1);
+							
+							foundProduct.save()
+							.then( success => {
+								res.status(202).send("Review is dropped.");
+							}).catch( failed => {
+								res.status(406).send(failed);
+							});
+
+						}else{
+							res.status(406).send("Review does not exist.");
+						}
+					}).catch( errorProduct => {
+
+					});
+				}).catch( errorDropping => {
+					res.status(406).send(errorDropping);
+				});
+			}
+
+		}else{
+			res.status(401).send("Oh no. Sorry but you are not allowed to proceed to this operation.");
 		}
 		
 	}).catch( errorReview => {
 		res.status(406).send(errorReview);
 	});
-} //end of updateReview
+} //end of dropReview

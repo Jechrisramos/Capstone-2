@@ -23,17 +23,6 @@ module.exports.adminGetAllProducts = (req, res) => {
 // Get all active Products category
 module.exports.getAllActiveProducts = (req, res) => {
 	
-	/*Product.find({isAvailable:true})
-	.then( products => {
-		if(products.length == 0){
-			res.status(202).send("There are no available Products yet.");
-		}else{
-			res.status(201).send(products);
-		}
-	}).catch( error => {
-		res.status(406).send(error);
-	});*/
-
 	Category.find({isActive:true})
 	.then( categories => {
 		if(categories.length == 0){
@@ -64,7 +53,7 @@ module.exports.productView = (req, res) => {
 // get products via product category 
 // 611a1a603dbbd31574ae5f9d, 611a1a723dbbd31574ae5f9f, 611a1a823dbbd31574ae5fa1, 611a1a983dbbd31574ae5fa3, 611a1bdc3dbbd31574ae5fad
 module.exports.categorizedItems = (req, res) => {
-	//res.send(req.params.categoryId);
+	
 	Product.find({category:req.params.categoryId, isAvailable:true})
 	.then( products => {
 		if(products.length == 0){
@@ -113,7 +102,7 @@ module.exports.createProduct = (req, res) => {
 						let newProduct = {
 							productId: savedProduct._id
 						}
-						
+
 						foundCategory.products.push(newProduct); //add product to category's products property.
 						foundCategory.save() //save the pushed product
 						.then( success => {

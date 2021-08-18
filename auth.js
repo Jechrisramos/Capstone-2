@@ -1,6 +1,8 @@
 /*-- Import JWT Module --*/
 const jwt = require("jsonwebtoken");
-const secret = "H@ppyto$Erv3You";
+
+require('dotenv').config();
+const secret = process.env.SECRET;
 
 /*-- CONTROLLERS --*/
 

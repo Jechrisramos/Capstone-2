@@ -1,12 +1,15 @@
 const express = require("express"); 
 const mongoose = require("mongoose");
+require('dotenv').config(); //import dotenv dependency
+const cors = require("cors");
 
 const app = express();
-const port = 4000;
+// we let .env file process to store configuration in the environment separate from code.
+const port = process.env.PORT;
 
 /* --Database Connection-- */
 	//1st arg = connection string. 2nd arg is an object that will prevents any current/future error while connecting to mongoDB Cloud DB 
-	mongoose.connect("mongodb+srv://jramos:123456*@ramos-b121.em0zj.mongodb.net/capstone-2b121?retryWrites=true&w=majority", {
+	mongoose.connect(process.env.DB_CONNECTION, {
 		useNewUrlParser:true,
 		useUnifiedTopology:true,
 		useFindAndModify:false
@@ -24,9 +27,12 @@ const port = 4000;
 	const reviewRoutes = require(__dirname + "/routes/reviewRoutes");
 	
 	/* --App extended feature-- */
+	app.use(cors());
+
 	app.use(express.json());
 	app.use(express.urlencoded({extended:true}));
 
+	
 	/* --Routes-- */
 	app.use("/avatars", avatarRoutes);
 	app.use("/users", userRoutes);
