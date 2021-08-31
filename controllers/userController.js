@@ -100,7 +100,6 @@ module.exports.updateUser = (req, res) => {
 	let updates = {
 		firstName : req.body.firstName,
 		lastName : req.body.lastName,
-		avatarId : req.body.avatarId,
 		tel : req.body.tel,
 		address : req.body.address
 	}
@@ -112,8 +111,8 @@ module.exports.updateUser = (req, res) => {
 		if(error){
 			res.status(409).send(error);
 		}else{
-			res.status(202).send("User details updated successfully.");
-			// res.status(202).send(true);
+			// res.status(202).send("User details updated successfully.");
+			res.status(202).send(true);
 		}
 	});
 
@@ -125,12 +124,14 @@ module.exports.updateUserRole = (req, res) => {
 	User.findById(req.params.id)
 	.then( result => {
 		if(result.isAdmin == true){
-			res.status(406).send(`${result.firstName} ${result.lastName} is already an admin.`);
+			// res.status(406).send(`${result.firstName} ${result.lastName} is already an admin.`);
+			res.status(406).send(false);
 		}else{
 			result.isAdmin = true;
 			result.save()
 			.then( updatedRole => {
-				res.status(202).send(`${result.firstName} ${result.lastName} is now an Admin.`);
+				// res.status(202).send(`${result.firstName} ${result.lastName} is now an Admin.`);
+				res.status(202).send(updatedRole);
 			}).catch( errorUpdate => {
 				res.status(400).send(errorUpdate);
 			})
@@ -145,11 +146,11 @@ module.exports.updateUserRole = (req, res) => {
 module.exports.myCart = (req, res) => {
 	User.findById(req.verifiedUser.id)
 	.then( foundUser => {
-		if(foundUser.cart.length == 0){ //if empty
-			res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
-		}else{ //send cart's items.
+		// if(foundUser.cart.length == 0){ //if empty
+		// 	 res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+		// }else{ //send cart's items.
 			res.status(202).send(foundUser.cart);
-		}
+		//}
 	}).catch( error => {
 		res.status(406).send(error);
 	} );
@@ -160,7 +161,8 @@ module.exports.deleteAllCartItems = (req, res) => {
 	User.findById(req.verifiedUser.id)
 	.then( foundUser => {
 		if(foundUser.cart.length == 0){ //if empty
-			res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+			//res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+			res.status(406).send(false);
 		}else{
 			foundUser.cart.splice(0, foundUser.cart.length); //delete all starting with index zero based on the cart's total count
 			foundUser.save()
@@ -180,7 +182,8 @@ module.exports.deleteOneCartItem = (req, res) => {
 	User.findById(req.verifiedUser.id)
 	.then( foundUser => {
 		if(foundUser.cart.length == 0){ //if empty
-			res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+			//res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+			res.status(406).send(false);
 		}else{
 			const itemIndex = foundUser.cart.findIndex( foundItem => new String(foundItem._id).trim() == new String(req.params.itemId).trim());
 			if(itemIndex >= 0){ //if index is greater than or equal to 0 perform splice
@@ -188,7 +191,8 @@ module.exports.deleteOneCartItem = (req, res) => {
 				foundUser.save() //save the whole document
 				.then( success => {
 					if(success.cart.length == 0){
-						res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+						//res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+						res.status(406).send(false);
 					}else{
 						res.status(201).send(success.cart); //will send user's updated cart
 					}
@@ -196,7 +200,8 @@ module.exports.deleteOneCartItem = (req, res) => {
 					res.status(406).send(failed);
 				});
 			}else{ // assume itemIndex = -1 which no result throw error message.
-				res.status(406).send(`${req.params.itemId} has no result. No changes made.`);
+				//res.status(406).send(`${req.params.itemId} has no result. No changes made.`);
+				res.status(406).send(false);
 			}
 			
 		}
@@ -213,7 +218,8 @@ module.exports.checkOut = (req, res) => {
 
 		//if cart is empty throw prompt message.
 		if(foundUser.cart.length == 0){
-			res.status(406).send("Please add product(s) to your cart first, before proceeding to check-out. Thank you.");
+			// res.status(406).send("Please add product(s) to your cart first, before proceeding to check-out. Thank you.");
+			res.status(406).send(false);
 		}else{ //proceed to create an order instead
 			let computedPrices = 0;
 			if(foundUser.cart.length > 1){
@@ -244,7 +250,8 @@ module.exports.checkOut = (req, res) => {
 				foundUser.cart.splice(0, foundUser.cart.length);
 				foundUser.save()
 				.then( success => {
-					res.status(201).send(`Congratulations! Your Order with serial number ${newOrder._id} was successfully added.`);
+					// res.status(201).send(`Congratulations! Your Order with serial number ${newOrder._id} was successfully added.`);
+					res.status(201).send(success);
 				}).catch( failed => {
 					res.status(406).send(failed);
 				});
