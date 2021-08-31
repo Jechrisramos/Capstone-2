@@ -1,7 +1,7 @@
 /* --MODULES-- */
 const bcrypt = require("bcrypt");
 
-/* --MODEL-- */
+/* --MODEL-- */ 
 const User = require("../models/user");
 const Order = require("../models/order");
 const { createAccessToken } = require("../auth");
@@ -27,7 +27,7 @@ module.exports.register = (req, res) => {
 		User.findOne( {email : formattedEmail} )
 		.then( result => {
 			if(result){
-				res.status(406).send(`Email is already taken.`);
+				res.status(406).send(false);
 			}else{
 				let newUser = new User({
 					firstName: req.body.firstName,
@@ -40,13 +40,15 @@ module.exports.register = (req, res) => {
 					address: req.body.address
 				});
 				newUser.save()
-				.then( registeredUser => res.status(201).send(`New User is registered.`) )
+				//.then( registeredUser => res.status(201).send(`New User is registered.`) )
+				.then( registeredUser => res.status(201).send(true) )
 				.catch( errorResult => res.status(409).send(errorResult) );
 			}
 		} )
 		.catch( error => res.status(409).send(error) );
 	}else{
-		res.status(406).send(`All inputs are required.`);
+		//res.status(406).send(`All inputs are required.`);
+		res.status(406).send(false);
 	}
 
 } // end of register
@@ -62,17 +64,21 @@ module.exports.login = (req, res) => {
 			} else {
 				if(foundUser && (foundUser.email == formattedEmail)){
 					if(bcrypt.compareSync(req.body.password, foundUser.password)){
-						res.status(202).send({ accessToken : createAccessToken(foundUser) });
+						 res.status(202).send({ accessToken : createAccessToken(foundUser) });
+						//res.status(202).send(true)
 					}else{
 						res.status(406).send("The password you entered does not match. Please try again.");
+						// res.status(406).send(false);
 					}
 				}else{
 					res.status(406).send("Whoops! Email does not exist. Please try again.");
+					// res.status(406).send(false);
 				}
 			}
 		});
 	} else {
 		res.status(406).send("All fields are required.");
+		// res.status(406).send(false);
 	}
 
 } // end of login
@@ -107,6 +113,7 @@ module.exports.updateUser = (req, res) => {
 			res.status(409).send(error);
 		}else{
 			res.status(202).send("User details updated successfully.");
+			// res.status(202).send(true);
 		}
 	});
 

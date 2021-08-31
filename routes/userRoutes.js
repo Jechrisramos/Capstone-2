@@ -9,7 +9,7 @@ const { verifyToken, verifyAdmin } = require("../auth");
 const { getUsers, register, login, userProfile, updateUser, updateUserRole, myCart, deleteAllCartItems, deleteOneCartItem, checkOut } = require("../controllers/userController");
 
 /* --ROUTES-- */
-router.post('/login', login);
+router.post('/login', login); 
 router.post('/register', register);
 router.get('/', verifyToken, verifyAdmin, getUsers);
 router.put('/:id/set-admin', verifyToken, verifyAdmin, updateUserRole);
