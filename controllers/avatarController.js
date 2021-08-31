@@ -8,6 +8,18 @@ module.exports.getAvatars = (req, res) => {
 	Avatar.find({}, (error, result) => (error) ? console.log(error) : res.send(result));
 } //end of getAvatars
 
+module.exports.returnOne = (req, res) => {
+	Avatar.findById(req.params.id)
+	.then(avatar => {
+		if(avatar){
+			res.status(200).send(avatar)
+		}else{
+			res.status(406).send(false);
+		}
+	})
+	.catch(error => res.status(406).send(error))
+}//end of returnOne
+
 // Create New Avatar(s)
 module.exports.createAvatar = (req, res) => {
 	req.body.forEach( body => {

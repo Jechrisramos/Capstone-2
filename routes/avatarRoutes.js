@@ -6,10 +6,11 @@ const router = express.Router();
 const { verifyToken, verifyAdmin } = require("../auth");
 
 /* --Controllers-- */
-const { getAvatars, createAvatar, updateAvatar, archive } = require("../controllers/avatarController");
+const { getAvatars, returnOne, createAvatar, updateAvatar, archive } = require("../controllers/avatarController");
 
 /* --Routes-- */
 router.get('/', getAvatars);
+router.get('/avatar/:id', returnOne);
 router.post('/', verifyToken, verifyAdmin, createAvatar);
 router.put('/:id/update', verifyToken, verifyAdmin, updateAvatar);
 router.delete('/:id/delete', verifyToken, verifyAdmin, archive);
