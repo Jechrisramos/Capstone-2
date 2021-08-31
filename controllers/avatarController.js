@@ -8,6 +8,7 @@ module.exports.getAvatars = (req, res) => {
 	Avatar.find({}, (error, result) => (error) ? console.log(error) : res.send(result));
 } //end of getAvatars
 
+//Retrieve one avatar via wildcard
 module.exports.returnOne = (req, res) => {
 	Avatar.findById(req.params.id)
 	.then(avatar => {
