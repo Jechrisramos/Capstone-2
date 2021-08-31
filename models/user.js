@@ -22,7 +22,7 @@ const userSchema = new Schema ({
 	address: {
 		street:String,
 		city:String,
-		state:String,
+		states:String,
 		zipCode:String
 	},
 	cart: [ //each user has his/her cart.
