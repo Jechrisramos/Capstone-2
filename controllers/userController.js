@@ -1,5 +1,5 @@
 /* --MODULES-- */
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt"); 
 
 /* --MODEL-- */ 
 const User = require("../models/user");
@@ -131,7 +131,7 @@ module.exports.updateUserRole = (req, res) => {
 			result.save()
 			.then( updatedRole => {
 				// res.status(202).send(`${result.firstName} ${result.lastName} is now an Admin.`);
-				res.status(202).send(updatedRole);
+				res.status(202).send(true);
 			}).catch( errorUpdate => {
 				res.status(400).send(errorUpdate);
 			})
