@@ -9,11 +9,7 @@ const productSchema = new Schema ({
 		type: Number,
 		min: 50,
 	},
-	gallery: [ //will be an array of objects
-		{
-			image: String
-		}
-	],
+	gallery: String,
 	shortDescription: String,
 	category: String,
 	isAvailable: {
