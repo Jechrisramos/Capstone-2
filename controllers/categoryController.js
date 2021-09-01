@@ -33,12 +33,12 @@ module.exports.createCategory = (req, res) => {
 		});
 		newCategory.save()
 		.then( addedCategory =>{
-			res.status(201).send(`New Category is added.`);
+			res.status(201).send(addedCategory);
 		}).catch( error => {
 			res.status(406).send(error);
 		});
 	}else{
-		res.send(`All fields are required`);
+		res.send(false);
 	}
 
 } //end of createCategory
@@ -53,7 +53,7 @@ module.exports.updateCategory = (req, res) => {
 	}
 	let options = { new:true }
 
-	Category.findByIdAndUpdate(req.params.id, {$set: updates}, options, (error, updated) =>	(error) ? res.status(406).send(error) : res.status(202).send(`"${updated.category}" is updated at ${updated.updatedAt}.`));
+	Category.findByIdAndUpdate(req.params.id, {$set: updates}, options, (error, updated) =>	(error) ? res.status(406).send(error) : res.status(202).send(updated));
 
 } //end of updateCategory
 
@@ -63,12 +63,14 @@ module.exports.deactivateCategory = (req, res) => {
 	Category.findById(req.params.id)
 	.then( resultCategory => {
 		if(resultCategory.isActive == false){
-			res.send(`"${resultCategory.category}" category was already inactive. No changes made.`);
+			// res.send(`"${resultCategory.category}" category was already inactive. No changes made.`);
+			res.status(406).send(false);
 		}else{
 			resultCategory.isActive = false;
 			resultCategory.save()
 			.then( deactivatedCategory => {
-				res.status(406).send(`"${resultCategory.category}" category is now inactive.`);
+				// res.status(200).send(`"${resultCategory.category}" category is now inactive.`);
+				res.status(200).send(true);
 			}).catch( errorDeactivation => {
 				res.status(406).send(errorDeactivation);
 			})
@@ -85,12 +87,14 @@ module.exports.restoreCategory = (req, res) => {
 	Category.findById(req.params.id)
 	.then( resultCategory => {
 		if(resultCategory.isActive == true){
-			res.send(`"${resultCategory.category}" category is still active. No changes made.`);
+			//res.send(`"${resultCategory.category}" category is still active. No changes made.`);
+			res.status(406).send(false);
 		}else{
 			resultCategory.isActive = true;
 			resultCategory.save()
 			.then( activeCategory => {
-				res.status(406).send(`"${resultCategory.category}" category is now active.`);
+				//res.status(200).send(`"${resultCategory.category}" category is now active.`);
+				res.status(200).send(true);
 			}).catch(errorDeactivation => {
 				res.status(406).send(errorDeactivation);
 			})
