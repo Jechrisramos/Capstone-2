@@ -49,7 +49,7 @@ module.exports.updateCategory = (req, res) => {
 	let updates = {
 		category: req.body.category,
 		categoryDescription: req.body.categoryDescription,
-		featuredImage: req.body.featured_image
+		featuredImage: req.body.featuredImage
 	}
 	let options = { new:true }
 
