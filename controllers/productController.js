@@ -106,7 +106,8 @@ module.exports.createProduct = (req, res) => {
 						foundCategory.products.push(newProduct); //add product to category's products property.
 						foundCategory.save() //save the pushed product
 						.then( success => {
-							res.status(201).send(`New Product is added.`);
+							//res.status(201).send(`New Product is added.`);
+							res.status(201).send(success);
 						}).catch( failed => {
 							res.status(406).send(failed);
 						});
@@ -119,7 +120,8 @@ module.exports.createProduct = (req, res) => {
 				});
 
 			}else{
-				res.status(406).send("Product Name, Description and Price are required. Please try again.");
+				//res.status(406).send("Product Name, Description and Price are required. Please try again.");
+				res.status(406).send(false);
 			}
 		} //end of else for foundProduct
 	}).catch( productError => {
@@ -155,7 +157,8 @@ module.exports.updateProduct = (req, res) => {
 		
 		foundProduct.save()
 		.then( success => {
-			res.status(201).send(`${success.productName} successfully updated.`);
+			//res.status(201).send(`${success.productName} successfully updated.`);
+			res.status(201).send(success);
 		}).catch( failed => {
 			res.status(406).send(failed);
 		});
@@ -173,14 +176,17 @@ module.exports.archiveProduct = (req, res) => {
 	Product.findById(req.params.id)
 	.then( resultProduct => {
 		if(resultProduct.isAvailable == false){
-			res.status(406).send(`"${resultProduct.productName}" was already archived. No changes made.`);
+			//res.status(406).send(`"${resultProduct.productName}" was already archived. No changes made.`);
+			res.status(406).send(false);
 		}else{
 			resultProduct.isAvailable = false;
 			resultProduct.save()
 			.then( archivedProduct => {
-				res.status(202).send(`"${resultProduct.productName}" is now archived.`);
+				//res.status(202).send(`"${resultProduct.productName}" is now archived.`);
+				res.status(202).send(archivedProduct);
 			}).catch( errorDeactivation => {
-				res.status(406).send(errorDeactivated);
+				//res.status(406).send(errorDeactivation);
+				res.status(406).send(false);
 			});
 		}
 	}).catch( error => {
@@ -195,14 +201,17 @@ module.exports.restoreProduct = (req, res) => {
 	Product.findById(req.params.id)
 	.then( resultProduct => {
 		if(resultProduct.isAvailable == true){
-			res.status(406).send(`"${resultProduct.productName}" is still active. No changes made.`);
+			//res.status(406).send(`"${resultProduct.productName}" is still active. No changes made.`);
+			res.status(406).send(false);
 		}else{
 			resultProduct.isAvailable = true;
 			resultProduct.save()
 			.then( restoredProduct => {
-				res.status(202).send(`"${resultProduct.productName}" is now active.`);
+				//res.status(202).send(`"${resultProduct.productName}" is now active.`);
+				res.status(202).send(restoredProduct);
 			}).catch( errorDeactivation => {
-				res.status(406).send(errorDeactivated);
+				//res.status(406).send(errorDeactivation);
+				res.status(406).send(false);
 			});
 		}
 	}).catch( error => {
