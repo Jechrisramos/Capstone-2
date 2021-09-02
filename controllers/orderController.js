@@ -7,12 +7,12 @@ const User = require("../models/user");
 module.exports.getAllOrders = (req, res) => {
 	Order.find()
 	.then( orders => {
-		if(orders.length == 0){
-			//res.status(201).send("There are no orders yet.");
-			res.status(406).send(false);
-		}else{
+		// if(orders.length == 0){
+		// 	//res.status(201).send("There are no orders yet.");
+		// 	res.status(406).send(false);
+		// }else{
 			res.status(201).send(orders);
-		}
+		// }
 	}).catch( error => {
 		res.status(406).send(error);
 	});
