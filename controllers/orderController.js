@@ -70,7 +70,7 @@ module.exports.toDeliver = (req, res) => {
 			order.status = "delivery";
 			order.save()
 			.then( success => {
-				res.status(202).send("Order is set for Delivery.");
+				//res.status(202).send("Order is set for Delivery.");
 				res.status(202).send(success);
 			}).catch( failed =>{
 				res.status(406).send(failed);
