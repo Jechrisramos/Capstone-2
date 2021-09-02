@@ -8,7 +8,8 @@ module.exports.getAllOrders = (req, res) => {
 	Order.find()
 	.then( orders => {
 		if(orders.length == 0){
-			res.status(201).send("There are no orders yet.");
+			//res.status(201).send("There are no orders yet.");
+			res.status(406).send(false);
 		}else{
 			res.status(201).send(orders);
 		}
@@ -24,7 +25,8 @@ module.exports.filterByStatus = (req, res) => {
 		Order.find({status:req.body.status})
 		.then( orders => {
 			if(orders.length == 0){
-				res.status(201).send(`There are no orders with "${req.body.status}" status as of now.`);
+				//res.status(201).send(`There are no orders with "${req.body.status}" status as of now.`);
+				res.status(406).send(false);
 			}else{
 				res.status(201).send(orders);
 			}
@@ -32,7 +34,7 @@ module.exports.filterByStatus = (req, res) => {
 			res.status(406).send(error);
 		});
 	}else{
-		res.status(406).send("Invalid Query field. Please try again.");
+		res.status(406).send(false);
 	}
 } //end of filterByStatus
 
@@ -43,7 +45,8 @@ module.exports.viewOrder = (req, res) => {
 		if(order){
 			res.status(201).send(order);
 		}else{
-			res.status(201).send(`There are no result for ${req.params.id}.`);
+			//res.status(406).send(`There are no result for ${req.params.id}.`);
+			res.status(406).send(false);
 		}
 	}).catch( error => {
 		res.status(406).send(error);
@@ -55,16 +58,20 @@ module.exports.toDeliver = (req, res) => {
 	Order.findById(req.params.id)
 	.then( order => {
 		if(order.status == "complete"){
-			res.status(406).send("Unable to proceed. Order is already on complete stage.");
+			//res.status(406).send("Unable to proceed. Order is already on complete stage.");
+			res.status(406).send(false);
 		}else if(order.status == "cancelled"){
-			res.status(406).send("Unable to proceed. Order is cancelled.");
+			//res.status(406).send("Unable to proceed. Order is cancelled.");
+			res.status(406).send(false);
 		}else if (order.status == "delivery"){
-			res.status(406).send("Order is already on delivery stage.");
+			//res.status(406).send("Order is already on delivery stage.");
+			res.status(406).send(false);
 		}else{
 			order.status = "delivery";
 			order.save()
 			.then( success => {
 				res.status(202).send("Order is set for Delivery.");
+				res.status(202).send(success);
 			}).catch( failed =>{
 				res.status(406).send(failed);
 			});
@@ -79,16 +86,20 @@ module.exports.toComplete = (req, res) => {
 	Order.findById(req.params.id)
 	.then( order => {
 		if(order.status == "in-progress"){
-			res.status(406).send("Unable to proceed. Order is still on in-progress stage.");
+			//res.status(406).send("Unable to proceed. Order is still on in-progress stage.");
+			res.status(406).send(false);
 		}else if(order.status == "cancelled"){
-			res.status(406).send("Unable to proceed. Order is cancelled.");
+			//res.status(406).send("Unable to proceed. Order is cancelled.");
+			res.status(406).send(false);
 		}else if (order.status == "complete"){
-			res.status(406).send("Unable to proceed. Order is already on complete stage.");
+			//res.status(406).send("Unable to proceed. Order is already on complete stage.");
+			res.status(406).send(false);
 		}else{
 			order.status = "complete";
 			order.save()
 			.then( success => {
-				res.status(202).send("Order is complete.");
+				//res.status(202).send("Order is complete.");
+				res.status(202).send(success);
 			}).catch( failed =>{
 				res.status(406).send(failed);
 			});
@@ -105,7 +116,8 @@ module.exports.myOrders = (req, res) => {
 		if(!orders.length == 0){
 			res.status(202).send(orders);
 		}else{
-			res.status(406).send("You have no orders yet.");
+			//res.status(406).send("You have no orders yet.");
+			res.status(406).send(false);
 		}
 	}).catch( error => {
 		res.status(406).send(error);
@@ -119,7 +131,8 @@ module.exports.viewMyOrder = (req, res) => {
 		if(order.userId == req.verifiedUser.id){
 			res.status(202).send(order);
 		}else{
-			res.status(401).send("You are not authorized to proceed to this operation.");
+			//res.status(401).send("You are not authorized to proceed to this operation.");
+			res.status(401).send(false);
 		}
 	}).catch( error => {
 		res.status(406).send(error);
@@ -132,24 +145,28 @@ module.exports.toCancel = (req, res) => {
 	.then( order => {
 		if(order.userId == req.verifiedUser.id){
 			if(order.status == "cancelled"){
-				res.status(406).send("Order is already cancelled.");
+				//res.status(406).send("Order is already cancelled.");
+				res.status(406).send(false);
 			}else if(order.status == "complete"){
-				res.status(406).send("Order is already complete.");
+				//res.status(406).send("Order is already complete.");
+				res.status(406).send(false);
 			}else if(order.status == "delivery"){
-				res.status(406).send(`Order is already in delivery stage. Cancelation of ${order._id} is no longer allowed. Please call our Helpdesk for more information.`);
+				//res.status(406).send(`Order is already in delivery stage. Cancelation of ${order._id} is no longer allowed. Please call our Helpdesk for more information.`);
+				res.status(406).send(false);
 			}else{
 				order.status = "cancelled";
 				order.save()
 				.then( success => {
-					res.status(202).send("Order is cancelled.");
+					//res.status(202).send("Order is cancelled.");
+					res.status(202).send(success);
 				}).catch( failed =>{
 					res.status(406).send(failed);
 				});
 			}
 		}else{
-			res.status(401).send("You are not authorized to proceed to this operation.");
+			//res.status(401).send("You are not authorized to proceed to this operation.");
+			res.status(401).send(false);
 		}
-
 
 	}).catch( error =>{
 		res.status(406).send(error);
