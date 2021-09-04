@@ -167,7 +167,8 @@ module.exports.deleteAllCartItems = (req, res) => {
 			foundUser.cart.splice(0, foundUser.cart.length); //delete all starting with index zero based on the cart's total count
 			foundUser.save()
 			.then( success => {
-				res.status(202).send(`Deleted all items in your Cart.`);
+				//res.status(202).send(`Deleted all items in your Cart.`);
+				res.status(202).send(success);
 			}).catch( failed => {
 				res.status(406).send(failed);
 			});
