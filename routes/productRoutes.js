@@ -10,7 +10,7 @@ const { adminGetAllProducts, fetchProducts, getAllActiveProducts, productView, c
 
 /* --Routes-- */
 router.get('/', verifyToken, verifyAdmin, adminGetAllProducts);
-router.get('/products', verifyToken, fetchProducts);
+router.get('/product/all', verifyToken, fetchProducts);
 router.get('/shop', getAllActiveProducts); // open for public
 router.get('/product/:id', productView); // open for public
 router.get('/:categoryId/category/', categorizedItems);
