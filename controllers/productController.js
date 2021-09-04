@@ -267,7 +267,8 @@ module.exports.addToCart = (req, res) => {
 
 					userResult.save()
 					.then( success => {
-						res.status(201).send(`${resultProduct.productName} is added to cart.`);
+						//res.status(201).send(`${resultProduct.productName} is added to cart.`);
+						res.status(201).send(success);
 					}).catch( failed => { 
 						res.status(406).send(failed); 
 					});
@@ -295,7 +296,8 @@ module.exports.addToCart = (req, res) => {
 					//then save user
 					userResult.save()
 					.then( success => {
-						res.status(201).send(`${resultProduct.productName} is added to cart.`);
+						//res.status(201).send(`${resultProduct.productName} is added to cart.`);
+						res.status(201).send(success);
 					}).catch( failed => { 
 						res.status(406).send(failed);
 					});
@@ -307,7 +309,8 @@ module.exports.addToCart = (req, res) => {
 				res.status(406).send(errorUserResult);
 			});
 		}else{
-			res.status(406).send("Product is not available right now. Please contact our helpdesk for more details.");
+			//res.status(406).send("Product is not available right now. Please contact our helpdesk for more details.");
+			res.status(406).send(false);
 		}
 		
 
