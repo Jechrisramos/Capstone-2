@@ -6,10 +6,11 @@ const { verifyToken, verifyAdmin } = require("../auth");
 const { writeReview } = require("../controllers/reviewController");
 
 /* --Controller-- */
-const { adminGetAllProducts, getAllActiveProducts, productView, categorizedItems, createProduct, updateProduct, archiveProduct, restoreProduct, addToCart } = require("../controllers/productController");
+const { adminGetAllProducts, fetchProducts, getAllActiveProducts, productView, categorizedItems, createProduct, updateProduct, archiveProduct, restoreProduct, addToCart } = require("../controllers/productController");
 
 /* --Routes-- */
 router.get('/', verifyToken, verifyAdmin, adminGetAllProducts);
+router.get('/products', verifyToken, fetchProducts);
 router.get('/shop', getAllActiveProducts); // open for public
 router.get('/product/:id', productView); // open for public
 router.get('/:categoryId/category/', categorizedItems);

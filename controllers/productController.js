@@ -10,7 +10,8 @@ module.exports.adminGetAllProducts = (req, res) => {
 	Product.find()
 	.then( products => {
 		if(products.length == 0){
-			res.status(202).send("There are no added Products yet.");
+			//res.status(202).send("There are no added Products yet.");
+			res.status(202).send(false);
 		}else{
 			res.status(202).send(products);
 		}
@@ -20,13 +21,29 @@ module.exports.adminGetAllProducts = (req, res) => {
 
 } //end of adminGetAllProducts
 
+module.exports.fetchProducts = () => {
+
+	Product.find()
+	.then( products => {
+		if(products.length == 0){
+			res.status(406).send(false);
+		}else{
+			res.status(202).send(products);
+		}
+	}).catch( error => {
+		res.status(406).send(error);
+	});
+
+} //end of fetchProducts
+
 // Get all active Products category
 module.exports.getAllActiveProducts = (req, res) => {
 	
 	Category.find({isActive:true})
 	.then( categories => {
 		if(categories.length == 0){
-			res.status(202).send("There are no categories available for now.");
+			//res.status(202).send("There are no categories available for now.");
+			res.status(202).send(false);
 		}else{
 			res.status(202).send(categories);
 		}
@@ -41,12 +58,14 @@ module.exports.productView = (req, res) => {
 	Product.findById(req.params.id)
 	.then( productResult =>{
 		if(productResult.length == 0){
-			res.status(202).send("Product does not exist.");
+			//res.status(202).send("Product does not exist.");
+			res.status(202).send(false);
 		}else{
 			res.status(202).send(productResult);
 		}
 	}).catch( error => {
-		res.status(406).send("Product does not exist.");
+		//res.status(406).send("Product does not exist.");
+		res.status(406).send(false);
 	});
 } //end of productView
 
@@ -57,7 +76,8 @@ module.exports.categorizedItems = (req, res) => {
 	Product.find({category:req.params.categoryId, isAvailable:true})
 	.then( products => {
 		if(products.length == 0){
-			res.status(202).send("There are no available Products for this category yet.");
+			//res.status(202).send("There are no available Products for this category yet.");
+			res.status(202).send(false);
 		}else{
 			//if(products.isAvailable){
 				res.status(202).send(products);
@@ -77,7 +97,8 @@ module.exports.createProduct = (req, res) => {
 	Product.findOne({productName:req.body.productName})
 	.then( foundProduct => {
 		if(foundProduct){ //if product do exist via product name send error message.
-			res.status(202).send("Whoops. Product already exist.");
+			//res.status(202).send("Whoops. Product already exist.");
+			res.status(202).send(false);
 		}else{ //else, perform creation of new product
 			if(req.body.productName && req.body.description && req.body.price){
 				
