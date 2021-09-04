@@ -21,7 +21,7 @@ module.exports.adminGetAllProducts = (req, res) => {
 
 } //end of adminGetAllProducts
 
-module.exports.fetchProducts = () => {
+module.exports.fetchProducts = (req, res) => {
 
 	Product.find()
 	.then( products => {
