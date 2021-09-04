@@ -25,11 +25,7 @@ module.exports.fetchProducts = () => {
 
 	Product.find()
 	.then( products => {
-		if(products.length == 0){
-			res.status(406).send(false);
-		}else{
-			res.status(202).send(products);
-		}
+		res.status(202).send(products);
 	}).catch( error => {
 		res.status(406).send(error);
 	});
