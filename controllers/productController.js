@@ -172,6 +172,7 @@ module.exports.updateProduct = (req, res) => {
 		foundProduct.price = req.body.price;
 		foundProduct.gallery = req.body.gallery;
 		foundProduct.shortDescription = req.body.shortDescription;
+		foundProduct.category = req.body.category;
 		
 		foundProduct.save()
 		.then( success => {
