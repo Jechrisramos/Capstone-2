@@ -191,12 +191,12 @@ module.exports.deleteOneCartItem = (req, res) => {
 				foundUser.cart.splice(itemIndex, 1); //removing 1 item based on the index of the requested item.
 				foundUser.save() //save the whole document
 				.then( success => {
-					if(success.cart.length == 0){
-						//res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
-						res.status(406).send(false);
-					}else{
+					// if(success.cart.length == 0){
+					// 	//res.status(202).send("Your cart is empty. Please continue shopping. Thank you.");
+					// 	res.status(406).send(false);
+					// }else{
 						res.status(201).send(success.cart); //will send user's updated cart
-					}
+					// }
 				}).catch( failed => {
 					res.status(406).send(failed);
 				});
