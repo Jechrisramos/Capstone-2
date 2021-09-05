@@ -158,7 +158,8 @@ module.exports.updateProduct = (req, res) => {
 		description: req.body.description,
 		price: req.body.price,
 		gallery: req.body.gallery,
-		shortDescription: req.body.shortDescription
+		shortDescription: req.body.shortDescription,
+		category: req.body.category
 	}
 	let options = { new:true }
 
