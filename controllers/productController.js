@@ -144,9 +144,6 @@ module.exports.createProduct = (req, res) => {
 	}).catch( productError => {
 		res.status(406).send(productError);
 	});
-
-	
-
 } //end of createProduct
 
 // Update product details
